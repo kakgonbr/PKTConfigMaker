@@ -6,6 +6,7 @@ public class SwitchConfig {
     private static String vlanMask;
     private static String vtyPass;
     private static String motd;
+    private static String defGate;
     private static boolean saveReload;
     private static int tempInt;
     private static java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
@@ -30,6 +31,12 @@ public class SwitchConfig {
         return !(secret = _secret.trim().replaceAll("^\\s*(\\S+).*", "$1")).isBlank();
     }
 
+    public static boolean setDefGate(String _defGate) {
+        java.util.regex.Matcher matcher = pattern.matcher(_defGate);
+
+        return matcher.find() && misc.Utils.validateIP(defGate = matcher.group(0));
+    }
+
     public static boolean setVlanIP(String _vlanIP) {
         java.util.regex.Matcher matcher = pattern.matcher(_vlanIP);
 
@@ -51,6 +58,6 @@ public class SwitchConfig {
     }
 
     public static String getConfig(){
-        return String.format("\nen\nconf term\nno ip domain-lookup\nservice password\nhostname %s\nenable secret %s\nline con 0\npassword %s\nlogin\nexit\nint vlan1\nip address %s %s\nno shutdown\nexit\nline vty 0 4\npassword %s\nlogin\nexit\nbanner motd #%s#\n" + (saveReload ? "exit\ncopy runn startu\n\nreload\n": ""), hostName, secret, conPass, vlanIP, vlanMask, vtyPass, motd);
+        return String.format("\nen\nconf term\nno ip domain-lookup\nservice password\nhostname %s\nenable secret %s\nip default %s\nline con 0\npassword %s\nlogin\nexit\nint vlan1\nip address %s %s\nno shutdown\nexit\nline vty 0 4\npassword %s\nlogin\nexit\nbanner motd #%s#\n" + (saveReload ? "exit\ncopy runn startu\n\nreload\n": ""), hostName, secret, defGate, conPass, vlanIP, vlanMask, vtyPass, motd);
         }
 }

@@ -2,7 +2,6 @@ public class AutoConfig extends view.Menu<String>{
     private static int tempInt;
     private static String inp;
     private static String tempStr;
-    private static java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
 
     private static view.Menu<String> menuSwitch = new view.Menu<String>(new String[]{"Create new config", "Show current config", "Edit Config", "Return"}, "Switch Config") {
         @Override
@@ -23,6 +22,8 @@ public class AutoConfig extends view.Menu<String>{
                     while (tempInt < 4 && (inp = misc.Utils.getLine("Vlan IP: ")).isBlank() || !SwitchConfig.setVlanIP(inp)) System.out.println("Invalid Vlan IP, " + (3 - tempInt++) + " attempts left.");
                     tempInt = 0;
                     while (tempInt < 4 && (inp = misc.Utils.getLine("Vlan Subnet Mask: ")).isBlank() || !SwitchConfig.setVlanMask(inp)) System.out.println("Invalid Vlan Subnet Mask, " + (3 - tempInt++) + " attempts left.");
+                    tempInt = 0; 
+                    while (tempInt < 4 && (inp = misc.Utils.getLine("Default Gateway: ")).isBlank() || !SwitchConfig.setDefGate(inp)) System.out.println("Invalid IP, " + (3 - tempInt++) + " attempts left.");
 
                     SwitchConfig.setSaveReload(misc.Utils.getLine("Save and reload config (y/n)?: ").contains("y"));
                     break;
@@ -56,28 +57,31 @@ public class AutoConfig extends view.Menu<String>{
                     if ((inp = misc.Utils.getLine("Console Password: ")).isBlank() || !SwitchConfig.setConPass(inp)) System.out.println("Invalid Console Password.");
                     break;
                 case 3: // sp
-                    if (tempInt < 4 && (inp = misc.Utils.getLine("Secret Password: ")).isBlank() || !SwitchConfig.setSecret(inp)) System.out.println("Invalid Secret Password");
+                    if ((inp = misc.Utils.getLine("Secret Password: ")).isBlank() || !SwitchConfig.setSecret(inp)) System.out.println("Invalid Secret Password");
                     break;
                 case 4: // vtyp
-                    if (tempInt < 4 && (inp = misc.Utils.getLine("VTY Password: ")).isBlank() || !SwitchConfig.setVtyPass(inp)) System.out.println("Invalid VTY Password");
+                    if ((inp = misc.Utils.getLine("VTY Password: ")).isBlank() || !SwitchConfig.setVtyPass(inp)) System.out.println("Invalid VTY Password");
                     break;
                 case 5: // mo
-                    if (tempInt < 4 && (inp = misc.Utils.getLine("MOTD: ")).isBlank() || !SwitchConfig.setMotd(inp)) System.out.println("Invalid MOTD");
+                    if ((inp = misc.Utils.getLine("MOTD: ")).isBlank() || !SwitchConfig.setMotd(inp)) System.out.println("Invalid MOTD");
                     break;
                 case 6: // vip
-                    if (tempInt < 4 && (inp = misc.Utils.getLine("Vlan IP: ")).isBlank() || !SwitchConfig.setVlanIP(inp)) System.out.println("Invalid Vlan IP");
+                    if ((inp = misc.Utils.getLine("Vlan IP: ")).isBlank() || !SwitchConfig.setVlanIP(inp)) System.out.println("Invalid Vlan IP");
                     break;
                 case 7: // vsn
-                    if (tempInt < 4 && (inp = misc.Utils.getLine("Vlan Subnet Mask: ")).isBlank() || !SwitchConfig.setVlanMask(inp)) System.out.println("Invalid Vlan Subnet Mask");
+                    if ((inp = misc.Utils.getLine("Vlan Subnet Mask: ")).isBlank() || !SwitchConfig.setVlanMask(inp)) System.out.println("Invalid Vlan Subnet Mask");
                     break;
                 case 8: // sar
                     SwitchConfig.setSaveReload(misc.Utils.getLine("Save and reload config (y/n)?: ").contains("y"));
                     break;
-                case 9: // re
+                case 9:
+                    if ((inp = misc.Utils.getLine("Default Gateway: ")).isBlank() || !SwitchConfig.setDefGate(inp)) System.out.println("Invalid IP");
+                    break;
+                case 10: // re
                     System.out.println("Returning.");
                     return false;
                 default:
-                    System.out.println("Enter 9 to return.");
+                    System.out.println("Enter 10 to return.");
                     break;
             }
             return true;
@@ -97,6 +101,7 @@ public class AutoConfig extends view.Menu<String>{
                     while (tempInt < 4 && (inp = misc.Utils.getLine("Console Password: ")).isBlank() || !RouterConfig.setConPass(inp)) System.out.println("Invalid Console Password, " + (3 - tempInt++) + " attempts left.");
                     tempInt = 0; 
                     while (tempInt < 4 && (inp = misc.Utils.getLine("Secret Password: ")).isBlank() || !RouterConfig.setSecret(inp)) System.out.println("Invalid Secret Password, " + (3 - tempInt++) + " attempts left.");
+
                     while ((inp = misc.Utils.getLine("Add an interface config (y/n)?: ")).contains("y")) {
                         misc.InterfaceEntry ie = new misc.InterfaceEntry();
                         tempInt = 0;
@@ -105,6 +110,7 @@ public class AutoConfig extends view.Menu<String>{
                         while (tempInt < 4 && !ie.setInterMask(misc.Utils.getLine("Interface Subnet Mask: "))) System.out.println("Invalid Subnet Mask, " + (3 - tempInt++) + " attempts left.");
                         if (ie.isValid()) RouterConfig.addInterface(ie);
                     }
+
                     while ((inp = misc.Utils.getLine("Add an ipv4 route (y/n)?: ")).contains("y")) {
                         misc.RouteEntry route = new misc.RouteEntry();
                         tempInt = 0;
@@ -143,10 +149,10 @@ public class AutoConfig extends view.Menu<String>{
                     if ((inp = misc.Utils.getLine("Host Name: ")).isBlank() || !RouterConfig.setHostName(inp)) System.out.println("Invalid Host Name.");
                     break;
                 case 2: // cp
-                    if ((inp = misc.Utils.getLine("Console Passowrd: ")).isBlank() || !RouterConfig.setHostName(inp)) System.out.println("Invalid Console Password.");
+                    if ((inp = misc.Utils.getLine("Console Passowrd: ")).isBlank() || !RouterConfig.setConPass(inp)) System.out.println("Invalid Console Password.");
                     break;
                 case 3: // sp
-                    if ((inp = misc.Utils.getLine("Secret Password: ")).isBlank() || !RouterConfig.setHostName(inp)) System.out.println("Invalid Secret Password.");
+                    if ((inp = misc.Utils.getLine("Secret Password: ")).isBlank() || !RouterConfig.setSecret(inp)) System.out.println("Invalid Secret Password.");
                     break;
                 case 4: // ai
                     misc.InterfaceEntry ie = new misc.InterfaceEntry();
@@ -214,6 +220,7 @@ public class AutoConfig extends view.Menu<String>{
                 System.out.println("Exiting.");
                 return false;
             default:
+                System.out.println("Enter 4 to exit.");
                 break;
         }
         return true;
