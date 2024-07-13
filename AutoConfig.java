@@ -45,7 +45,7 @@ public class AutoConfig extends view.Menu<String>{
         }
         
     };
-    private static view.Menu<String> submenuSwitch = new view.Menu<String>(new String[]{"Host Name", "Console Password", "Secret Password", "VTY Password", "MOTD", "Vlan IP", "Vlan Subnet Mask", "Save and reload", "Return"}, "Modify") {
+    private static view.Menu<String> submenuSwitch = new view.Menu<String>(new String[]{"Host Name", "Console Password", "Secret Password", "VTY Password", "MOTD", "Vlan IP", "Vlan Subnet Mask", "Save and reload", "Default Gateway", "Return"}, "Modify") {
 
         @Override
         protected boolean execute(int choice) {
@@ -191,6 +191,7 @@ public class AutoConfig extends view.Menu<String>{
                     System.out.println("Returning.");
                     return false;
                 default:
+                    System.out.println("Enter 9 to return.");
                     break;
             }
             return true;
